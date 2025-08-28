@@ -1,0 +1,34 @@
+# Ambiente virtual
+Projeto/venv/
+Projeto/.env
+
+# Arquivos Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# Arquivos de log
+*.log
+
+# Configurações de IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários e backups
+*.bak
+*.swp
+*~
+# arquivos da pasta testPython
+testPython
+models/        
+venv
+views
+main.py       
+requirements.t
