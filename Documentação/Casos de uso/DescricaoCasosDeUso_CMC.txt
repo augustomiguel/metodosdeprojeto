@@ -1,0 +1,58 @@
+1. DESCRIÇÃO DETALHADA DOS CASOS DE USO RELEVANTES
+
+Com base na análise de prioridade e impacto para os usuários, os três casos de uso mais relevantes são: "Localização do ônibus", "Ver horário da rota" e "Comunicar atraso".
+
+--------------------------------------------------
+
+1.1. Caso de Uso: Localização do ônibus
+
+* Nome: Localização do ônibus
+* Objetivo: Permitir que a comunidade acadêmica saiba a localização exata do ônibus em tempo real para reduzir o tempo de espera e aumentar a segurança.
+* Atores: Aluno (Comunidade acadêmica).
+* Prioridade: Imprescindível.
+* Requisitos Funcionais Associados: [RF002] Localização em tempo real.
+* Fluxo Principal:
+    1. Usuário abre o aplicativo.
+    2. Sistema autentica o usuário (ocorre apenas uma vez por sessão diária).
+    3. Usuário seleciona a opção "Cadê meu circular?" na tela principal.
+    4. O sistema exibe um mapa com um ícone representando a localização atual do ônibus.
+    5. A posição do ícone no mapa é atualizada continuamente, conforme o ônibus se desloca em sua rota.
+* Fluxos de Exceção:
+    * [FE01] Falha de Conexão: Caso o dispositivo do usuário perca a conexão com a internet, o aplicativo exibe a última localização conhecida com um aviso de que a informação pode estar desatualizada.
+    * [FE02] GPS do Ônibus Inativo: Se o sistema não receber atualizações do GPS do ônibus, o mapa exibirá um alerta informando que o rastreamento está temporariamente indisponível.
+
+--------------------------------------------------
+
+1.2. Caso de Uso: Ver horário da rota
+
+* Nome: Ver horário da rota.
+* Objetivo: Permitir que o usuário consulte a lista completa de horários e rotas para planejar sua viagem com precisão.
+* Atores: Aluno (Comunidade acadêmica).
+* Prioridade: Alta.
+* Requisitos Funcionais Associados: [RF003] Horários de circulação, [RF004] Principais pontos de parada.
+* Fluxo Principal:
+    1. Usuário abre o aplicativo e realiza a autenticação.
+    2. Na tela principal, o usuário seleciona uma das opções de rota (ex: "Rota Sede - Circular" ou "Rota Sede - CI/CTDR").
+    3. O sistema exibe uma nova tela com a lista de todos os horários programados para a rota selecionada.
+    4. O horário mais próximo do atual é destacado visualmente para fácil identificação.
+* Fluxos de Exceção: N/A.
+
+--------------------------------------------------
+
+1.3. Caso de Uso: Comunicar atraso
+
+* Nome: Comunicar atraso.
+* Objetivo: Permitir que o motorista notifique todos os passageiros de forma rápida e eficiente sobre atrasos ou problemas na rota, mantendo a transparência do serviço.
+* Atores: Motorista.
+* Prioridade: Alta.
+* Requisitos Funcionais Associados: [RF001] Notificações e avisos, [RF005] Comunicação por chat.
+* Fluxo Principal:
+    1. Motorista abre o aplicativo e realiza sua autenticação específica.
+    2. Na tela principal do motorista, ele seleciona a opção "Enviar Mensagem aos Usuários".
+    3. O sistema apresenta uma tela de chat com mensagens pré-definidas para situações comuns (ex: "Ônibus quebrado", "Atraso na rota", "Pausa na rota devido a manutenção emergencial").
+    4. Motorista seleciona a mensagem apropriada.
+    5. O sistema envia a mensagem como uma notificação para todos os usuários do aplicativo.
+* Fluxos de Exceção:
+    * [FE01] Falha de Conexão: Se o dispositivo do motorista estiver sem conexão, o aplicativo armazena a mensagem e a envia assim que a conexão for restabelecida, com um aviso sobre o atraso no envio.
+
+--------------------------------------------------
