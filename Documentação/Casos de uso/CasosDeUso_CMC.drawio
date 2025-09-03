@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="Gemini">
+  <diagram name="Diagrama de Casos de Uso - CMC" id="QIrzYZPhfflAXxIdO-Bx">
+    <mxGraphModel dx="1232" dy="752" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="actor-aluno" value="Aluno" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="360" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-motorista" value="Motorista" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="700" y="360" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="system-boundary" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="80" width="400" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="system-label" value="Cadê meu Circular?" style="text;html=1;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="325" y="90" width="190" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-localizacao" value="[RF002]&lt;br&gt;Acompanhar Localização" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="280" y="140" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-horarios" value="[RF003]&lt;br&gt;Consultar Horários" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="420" y="260" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-paradas" value="[RF004]&lt;br&gt;Visualizar Pontos de Parada" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="420" y="380" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-notificacoes" value="[RF001]&lt;br&gt;Receber Notificações" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="280" y="500" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-chat-aluno" value="[RF005]&lt;br&gt;Enviar Mensagem para Motorista" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="280" y="620" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-comunicado-motorista" value="[RF005]&lt;br&gt;Enviar Comunicado Geral" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="420" y="500" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-aluno-localizacao" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-aluno" target="uc-localizacao">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc-aluno-horarios" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-aluno" target="uc-horarios">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc-aluno-notificacoes" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-aluno" target="uc-notificacoes">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc-aluno-chat" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-aluno" target="uc-chat-aluno">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="assoc-motorista-comunicado" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-motorista" target="uc-comunicado-motorista">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-include-horarios-paradas" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="uc-horarios" target="uc-paradas">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
