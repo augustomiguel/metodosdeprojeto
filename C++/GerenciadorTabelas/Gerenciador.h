@@ -474,7 +474,6 @@ private:
     std::shared_ptr<GerenciadorTabelas> gerenciador;
     std::stack<std::shared_ptr<ICommand>> historicoComandos;
 
-    // <<< ADICIONE ESTA LINHA >>>
     std::shared_ptr<CentralDeNotificacoes> centralNotificacoes;
 
     // Construtor privado - altere-o para incluir a inicialização
@@ -509,8 +508,6 @@ public:
             std::cout << "Nenhuma ação para desfazer.\n";
         }
     }
-
-    // <<< ADICIONE ESTE MÉTODO COMPLETO >>>
     /**
      * @brief Retorna a instância da central de notificações gerida pela fachada.
      * @return Ponteiro para a CentralDeNotificacoes.
