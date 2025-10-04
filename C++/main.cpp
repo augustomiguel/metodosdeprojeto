@@ -1,6 +1,7 @@
 #include "models/AdministradorDeUsuarios.h" // Inclui a classe para gerenciar usuários em memória
 #include "models/InterfaceDB.h"          // Inclui a nova classe para persistência em arquivo
 #include <iostream>                      // Para operações de entrada/saída no console
+#include "models/notificacao_observer.h"  // Inclui o cabeçalho do padrão Observer
 
 int main() {
     // --- Criação e demonstração do AdministradorDeUsuarios (em memória) ---
@@ -67,6 +68,43 @@ int main() {
             u.exibirDados();
         }
     }
+
+
+
+    // ====================================================================
+    // Exemplo do Padrão Observer - Central de Notificacoes
+    // ====================================================================
+    std::cout << "\nTeste do Padrao Observer:" << std::endl;
+
+    // 1. Criar o Subject (a central de notificações)
+    auto central = std::make_shared<CentralDeNotificacoes>();
+
+    // 2. Criar os Observers (os apps dos alunos)
+    auto appAluno1 = std::make_shared<AlunoApp>("Ana");
+    auto appAluno2 = std::make_shared<AlunoApp>("Beto");
+    auto appAluno3 = std::make_shared<AlunoApp>("Carla");
+
+    // 3. Registrar os observers na central
+    std::cout << "Alunos Ana, Beto e Carla estao usando o app." << std::endl;
+    central->registrar(appAluno1);
+    central->registrar(appAluno2);
+    central->registrar(appAluno3);
+
+    // 4. Simular o motorista enviando uma mensagem
+    std::cout << "\n>> Motorista envia uma nova mensagem:" << std::endl;
+    central->enviarNovaMensagem("Atraso de 15 minutos na rota Sede - CI/CTDR.");
+
+    // 5. Um observer (Beto) deixa de escutar as notificações
+    std::cout << "\nAluno Beto fechou o app." << std::endl;
+    central->remover(appAluno2);
+
+    // 6. Simular o motorista enviando outra mensagem
+    std::cout << "\n>> Motorista envia outra mensagem:" << std::endl;
+    central->enviarNovaMensagem("Onibus quebrado. Aguardando substituicao.");
+
+    std::cout << "\n" << std::string(50, '=') << std::endl;
+    std::cout << "Aplicacao finalizada." << std::endl;
+
 
     return 0; // Retorna 0 indicando sucesso na execução
 }
