@@ -1,15 +1,8 @@
 #include <iostream>
 #include <memory>
-
-// --- INCLUDES CORRIGIDOS ---
-// Inclui o ficheiro principal que define a Fachada, Gerenciador, Usuario, etc.
-#include "GerenciadorTabelas/Gerenciador.h" 
-
-// Inclui a definição do comando para atualizar o usuário
-#include "commands/AtualizarUsuarioCommand.h" 
-
-// Inclui a definição do comando para enviar notificações
-#include "commands/EnviarNotificacaoCommand.h" 
+#include "GerenciadorTabelas/Gerenciador.h"
+#include "commands/EnviarNotificacaoCommand.h"
+#include "models/ProxyCentralNotificacoes.h" // <-- NOVO INCLUDE DO PROXY
 
 int main() {
     try {
@@ -18,60 +11,41 @@ int main() {
         auto gerenciador = std::make_shared<GerenciadorTabelas>(conexao);
         auto facade = FacadeSingletonController::getInstance(gerenciador);
 
-        std::cout << "--- Criando usuário inicial ---\n";
-        Usuario alice("Alice Silva", "alice@email.com", 28);
-        auto idAliceAny = gerenciador->criar(alice);
-        int idAlice = std::any_cast<int>(idAliceAny);
-        alice.setId(idAlice);
+        // Acessa a central de notificações REAL através da fachada
+        auto centralReal = facade->getCentralNotificacoes();
+
+        // --- 2. Criando Usuários para o Teste ---
+        Usuario motorista("Carlos", "carlos@circular.com", 45, "motorista");
+        Usuario aluno("Ana", "ana@aluno.com", 20, "aluno");
+
+        // Criando os apps dos alunos (Observers)
+        auto appAna = std::make_shared<AlunoApp>("Ana");
+        auto appBeto = std::make_shared<AlunoApp>("Beto");
+        centralReal->registrar(appAna);
+        centralReal->registrar(appBeto);
         
-        std::cout << "Usuário original:\n";
-        alice.mostrar();
         std::cout << std::string(50, '=') << std::endl;
 
-        // --- 2. Executando o Comando de Atualização ---
-        std::cout << "\n--- Preparando para atualizar usuário ---\n";
-        Usuario aliceAtualizada = alice;
-        aliceAtualizada.setNome("Alice Souza");
-        aliceAtualizada.setIdade(29);
+        // --- 3. TESTE 1: Motorista (deve ter sucesso) ---
+        std::cout << "\n--- Tentativa de envio pelo MOTORISTA ---\n";
+        // Criamos o Proxy, dando a ele acesso à central real e identificando o usuário como 'motorista'
+        auto proxyMotorista = std::make_shared<ProxyCentralNotificacoes>(centralReal, motorista);
         
-        auto comandoAtualizar = std::make_shared<AtualizarUsuarioCommand>(facade->getGerenciador(), aliceAtualizada);
-        facade->executarComando(comandoAtualizar);
+        // O comando agora recebe o PROXY, não a central real
+        auto comandoAtraso = std::make_shared<EnviarNotificacaoCommand>(proxyMotorista, "O circular está 10 minutos atrasado.");
+        facade->executarComando(comandoAtraso);
 
-        std::cout << "\nUsuário após atualização:\n";
-        auto usuarioBuscado = gerenciador->buscar<Usuario>("usuarios", idAlice);
-        if(usuarioBuscado) usuarioBuscado->mostrar();
         std::cout << std::string(50, '=') << std::endl;
 
-        // --- 3. Desfazendo a Ação ---
-        std::cout << "\n--- Desfazendo a última ação ---\n";
-        facade->desfazerUltimaAcao();
+        // --- 4. TESTE 2: Aluno (deve falhar) ---
+        std::cout << "\n--- Tentativa de envio pelo ALUNO ---\n";
+        // Criamos um NOVO Proxy, agora identificando o usuário como 'aluno'
+        auto proxyAluno = std::make_shared<ProxyCentralNotificacoes>(centralReal, aluno);
 
-        std::cout << "\nUsuário após o 'undo':\n";
-        usuarioBuscado = gerenciador->buscar<Usuario>("usuarios", idAlice);
-        if(usuarioBuscado) usuarioBuscado->mostrar();
-        std::cout << std::string(50, '=') << std::endl;
+        // Criamos um novo comando com o proxy do aluno
+        auto comandoFalso = std::make_shared<EnviarNotificacaoCommand>(proxyAluno, "Mensagem falsa que não será enviada.");
+        facade->executarComando(comandoFalso);
 
-        // ====================================================================
-        // Teste do Padrão Observer (Notificações)
-        // ====================================================================
-        std::cout << "\n--- Teste de Observer e Command ---\n";
-
-        // Criando os alunos (observers)
-        auto appAluno1 = std::make_shared<AlunoApp>("Ana");
-        auto appAluno2 = std::make_shared<AlunoApp>("Beto");
-
-        // Registrando os alunos na CentralDeNotificacoes através da fachada
-        facade->getCentralNotificacoes()->registrar(appAluno1);
-        facade->getCentralNotificacoes()->registrar(appAluno2);
-
-        // Criando o comando para enviar a notificação
-        auto comandoAviso = std::make_shared<EnviarNotificacaoCommand>(
-            facade->getCentralNotificacoes(),
-            "O circular está atrasado 15 minutos."
-        );
-
-        // Pedindo para a fachada executar o comando de notificação
-        facade->executarComando(comandoAviso);
 
     } catch (const std::exception& e) {
         std::cerr << "❌ Erro: " << e.what() << std::endl;

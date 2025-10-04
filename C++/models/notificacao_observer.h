@@ -9,6 +9,7 @@
 #include <string>
 #include <memory>
 #include <algorithm>
+#include "ICentralNotificacoes.h"
 
 // =============================================================================
 // 1. OBSERVER: A interface para os objetos que serão notificados
@@ -48,7 +49,7 @@ public:
  * @brief A CentralDeNotificacoes é o Subject concreto. Ela mantém uma lista
  * de observers e notifica-os quando seu estado (a mensagem) muda.
  */
-class CentralDeNotificacoes : public ISubject {
+class CentralDeNotificacoes : public ISubject, public ICentralNotificacoes {
 private:
     std::vector<std::shared_ptr<IObserver>> observers;
     std::string mensagemAtual;
@@ -73,7 +74,7 @@ public:
      * @brief Este método é chamado para simular o envio de uma nova mensagem
      * pelo motorista. Ele atualiza o estado e notifica os observers.
      */
-    void enviarNovaMensagem(const std::string& mensagem) {
+    void enviarNovaMensagem(const std::string& mensagem) override {
         this->mensagemAtual = mensagem;
         notificar();
     }

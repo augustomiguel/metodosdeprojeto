@@ -219,18 +219,20 @@ private:
     std::string nome;
     std::string email;
     int idade = 0;
+    std::string papel; // <-- NOVO ATRIBUTO (ex: "aluno", "motorista")
 
 public:
     // Construtores
     Usuario() = default;
-    Usuario(const std::string& n, const std::string& e, int i) 
-        : nome(n), email(e), idade(i) {}
+    Usuario(const std::string& n, const std::string& e, int i, std::string p) 
+    : nome(n), email(e), idade(i), papel(p) {}
 
     // Getters
     int getId() const { return id; }
     const std::string& getNome() const { return nome; }
     const std::string& getEmail() const { return email; }
     int getIdade() const { return idade; }
+    const std::string& getPapel() const { return papel; } // NOVO GETTER para que o Proxy possa ler o papel
 
     // Setters
     void setId(int novoId) { id = novoId; }
@@ -270,7 +272,8 @@ public:
             {"id", id},
             {"nome", nome},
             {"email", email},
-            {"idade", idade}
+            {"idade", idade},
+            {"papel", papel} //Papel adicionado
         };
     }
 
@@ -291,6 +294,7 @@ public:
         nome = getValue("nome", std::string{});
         email = getValue("email", std::string{});
         idade = getValue("idade", 0);
+        papel = getValue("papel", std::string{}); // Papel adicionado 
     }
 
     std::string obterTabela() const override {
