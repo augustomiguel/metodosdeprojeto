@@ -28,6 +28,5 @@ Thumbs.db
 # arquivos da pasta testPython
 testPython        
 venv
-views
 main.py       
 requirements.t
