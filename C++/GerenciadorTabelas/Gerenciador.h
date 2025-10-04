@@ -12,6 +12,12 @@
 #include <functional>
 #include <iostream>
 
+#include "UsuarioMemento.h"
+#include <memory>
+
+#include <stack>                      
+#include "../commands/ICommand.h"
+
 // =============================================================================
 // 1. INTERFACE BÁSICA PARA ENTIDADES
 // =============================================================================
@@ -231,6 +237,32 @@ public:
     void setEmail(const std::string& novoEmail) { email = novoEmail; }
     void setIdade(int novaIdade) { idade = novaIdade; }
 
+    /**
+     * @brief Cria um Memento que contém uma cópia do estado atual do usuário.
+     * Este é o método "Salvar Estado".
+     * @return Um ponteiro inteligente para o objeto Memento recém-criado.
+     */
+    std::shared_ptr<UsuarioMemento> criarMemento() const {
+        // 1. Usa o construtor privado de UsuarioMemento (lembra do 'friend'?).
+        // 2. Passa os valores dos atributos *atuais* deste objeto (this->nome, etc.).
+        // 3. std::make_shared cria o objeto Memento de forma segura.
+        return std::make_shared<UsuarioMemento>(this->nome, this->email, this->idade);
+    }
+
+    /**
+     * @brief Restaura o estado do usuário a partir de um Memento.
+     * Este é o método "Restaurar Estado".
+     * @param memento O objeto Memento contendo o estado salvo a ser restaurado.
+     */
+    void restaurarMemento(std::shared_ptr<UsuarioMemento> memento) {
+        // 1. Pega os valores guardados dentro do objeto memento.
+        // 2. Sobrescreve os atributos *atuais* deste objeto com esses valores salvos.
+        //    (Isso só é possível porque declaramos 'friend class Usuario' no Memento).
+        this->nome = memento->nome;
+        this->email = memento->email;
+        this->idade = memento->idade;
+    }
+
     // Interface Entidade
     std::map<std::string, std::any> paraDados() const override {
         return {
@@ -440,6 +472,9 @@ private:
     static std::shared_ptr<FacadeSingletonController> instancia;
     std::shared_ptr<GerenciadorTabelas> gerenciador;
 
+     std::stack<std::shared_ptr<ICommand>> historicoComandos;
+
+
     FacadeSingletonController(std::shared_ptr<GerenciadorTabelas> g) : gerenciador(g) {}
 
 public:
@@ -450,19 +485,36 @@ public:
         return instancia;
     }
 
-    // CRUD Usuario
-    std::any criarUsuario(const Usuario& u) { return gerenciador->criar(u); }
-    std::optional<Usuario> buscarUsuario(const std::any& id) { return gerenciador->buscar<Usuario>("usuarios", id); }
-    std::vector<Usuario> buscarTodosUsuarios() { return gerenciador->buscarTodos<Usuario>("usuarios"); }
-    bool atualizarUsuario(const Usuario& u) { return gerenciador->atualizar(u); }
-    bool excluirUsuario(const Usuario& u) { return gerenciador->excluir(u); }
+    /**
+     * @brief Permite que os comandos acessem o gerenciador de dados.
+     * @return Um ponteiro para o GerenciadorTabelas (o Receiver).
+     */
+    std::shared_ptr<GerenciadorTabelas> getGerenciador() {
+        return gerenciador;
+    }
 
-    // CRUD Rota
-    std::any criarRota(const Rota& r) { return gerenciador->criar(r); }
-    std::optional<Rota> buscarRota(const std::any& id) { return gerenciador->buscar<Rota>("rotas", id); }
-    std::vector<Rota> buscarTodasRotas() { return gerenciador->buscarTodos<Rota>("rotas"); }
-    bool atualizarRota(const Rota& r) { return gerenciador->atualizar(r); }
-    bool excluirRota(const Rota& r) { return gerenciador->excluir(r); }
+     /**
+     * @brief Invoker: Executa um comando e o armazena no histórico.
+     * @param comando O objeto de comando a ser executado.
+     */
+    void executarComando(std::shared_ptr<ICommand> comando) {
+        comando->execute();
+        historicoComandos.push(comando); // Empilha o comando para um futuro 'undo'
+    }
+
+    /**
+     * @brief Desfaz a última operação executada.
+     */
+    void desfazerUltimaAcao() {
+        if (!historicoComandos.empty()) {
+            auto ultimoComando = historicoComandos.top(); // Pega o último comando
+            ultimoComando->undo();                         // Chama o 'undo' dele
+            historicoComandos.pop();                       // Remove do histórico
+        } else {
+            std::cout << "Nenhuma ação para desfazer.\n";
+        }
+    }
+
 
     // Método para retornar a quantidade de entidades cadastradas
     int quantidadeEntidades(const std::string& tabela) {
@@ -472,150 +524,6 @@ public:
 };
 
 std::shared_ptr<FacadeSingletonController> FacadeSingletonController::instancia = nullptr;
-
-// =============================================================================
-// 8. EXEMPLO DE USO SUPER SIMPLES
-// =============================================================================
-
-class ExemploSimples {
-public:
-    static void executar() {
-        std::cout << "Gerenciador de Tabelas - Versão Simples" << std::endl;
-        std::cout << std::string(50, '=') << std::endl;
-
-        // Criar conexão mock e gerenciador
-        auto conexao = std::make_shared<ConexaoMock>();
-        auto gerenciador = std::make_shared<GerenciadorTabelas>(conexao);
-
-        // Inicializar fachada singleton
-        auto facade = FacadeSingletonController::getInstance(gerenciador);
-
-        std::cout << "\nCriando usuários..." << std::endl;
-        
-        // Criar usuários
-        Usuario usuario1("Alice Silva", "alice@email.com", 28);
-        Usuario usuario2("Bruno Santos", "bruno@email.com", 35);
-        
-        auto id1 = gerenciador->criar(usuario1);
-        auto id2 = gerenciador->criar(usuario2);
-
-        std::cout << "\nCriando produtos..." << std::endl;
-        
-        // Criar produtos
-        Produto produto1("Notebook", 2500.00, "Informática");
-        Produto produto2("Mouse", 50.00, "Informática");
-        
-        auto idProd1 = gerenciador->criar(produto1);
-        auto idProd2 = gerenciador->criar(produto2);
-
-        std::cout << "\nBuscando usuários..." << std::endl;
-        
-        // Buscar usuários
-        auto usuarioEncontrado = gerenciador->buscar<Usuario>("usuarios", id1);
-        if (usuarioEncontrado.has_value()) {
-            std::cout << "Usuário encontrado: ";
-            usuarioEncontrado.value().mostrar();
-        }
-
-        std::cout << "\nListando todos os usuários..." << std::endl;
-        
-        auto todosUsuarios = gerenciador->buscarTodos<Usuario>("usuarios");
-        for (const auto& usuario : todosUsuarios) {
-            usuario.mostrar();
-        }
-
-        std::cout << "\nListando todos os produtos..." << std::endl;
-        
-        auto todosProdutos = gerenciador->buscarTodos<Produto>("produtos");
-        for (const auto& produto : todosProdutos) {
-            produto.mostrar();
-        }
-
-        std::cout << "\nAtualizando usuário..." << std::endl;
-        
-        // Atualizar usuário
-        if (usuarioEncontrado.has_value()) {
-            auto& usuario = usuarioEncontrado.value();
-            usuario.setIdade(29);
-            usuario.setEmail("alice.nova@email.com");
-            
-            if (gerenciador->atualizar(usuario)) {
-                std::cout << "Usuário atualizado com sucesso!" << std::endl;
-                usuario.mostrar();
-            }
-        }
-
-        std::cout << "\nExcluindo produto..." << std::endl;
-        
-        // Excluir produto
-        if (gerenciador->excluir("produtos", idProd2)) {
-            std::cout << "Produto excluído com sucesso!" << std::endl;
-        }
-
-        std::cout << "\nProdutos restantes:" << std::endl;
-        auto produtosRestantes = gerenciador->buscarTodos<Produto>("produtos");
-        for (const auto& produto : produtosRestantes) {
-            produto.mostrar();
-        }
-
-        // =========================
-        // Testando CRUD de Rota
-        // =========================
-        std::cout << "\nCriando rotas..." << std::endl;
-        Rota rota1("Circular Sede", {"07:00", "08:00", "09:00"}, {"Portaria", "RU", "Biblioteca"});
-        Rota rota2("Sede - CTDR", {"10:00", "11:00"}, {"Sede", "CTDR"});
-
-        auto idRota1 = facade->criarRota(rota1);
-        auto idRota2 = facade->criarRota(rota2);
-
-        std::cout << "\nListando todas as rotas:" << std::endl;
-        auto rotas = facade->buscarTodasRotas();
-        for (const auto& r : rotas) r.mostrar();
-
-        std::cout << "\nAtualizando nome da primeira rota..." << std::endl;
-        auto rotaEncontrada = facade->buscarRota(idRota1);
-        if (rotaEncontrada.has_value()) {
-            Rota r = rotaEncontrada.value();
-            r.setNome("Circular Sede Atualizada");
-            facade->atualizarRota(r);
-        }
-
-        std::cout << "\nRotas após atualização:" << std::endl;
-        rotas = facade->buscarTodasRotas();
-        for (const auto& r : rotas) r.mostrar();
-
-        std::cout << "\nExcluindo segunda rota..." << std::endl;
-        rotaEncontrada = facade->buscarRota(idRota2);
-        if (rotaEncontrada.has_value()) {
-            facade->excluirRota(rotaEncontrada.value());
-        }
-
-        std::cout << "\nRotas restantes:" << std::endl;
-        rotas = facade->buscarTodasRotas();
-        for (const auto& r : rotas) r.mostrar();
-
-        std::cout << "\nQuantidade de rotas cadastradas: " << facade->quantidadeEntidades("rotas") << std::endl;
-
-        // Mostrar dados finais
-        std::cout << std::endl;
-        conexao->mostrarDados();
-
-        std::cout << "\nExemplo concluído com sucesso!" << std::endl;
-    }
-};
-
-// =============================================================================
-// 9. MAIN FUNCTION
-// =============================================================================
-
-int main() {
-    try {
-        ExemploSimples::executar();
-    } catch (const std::exception& e) {
-        std::cerr << "❌ Erro: " << e.what() << std::endl;
-        return 1;
-    }
-}
 
 // =============================================================================
 // 10. COMPILAÇÃO E USO

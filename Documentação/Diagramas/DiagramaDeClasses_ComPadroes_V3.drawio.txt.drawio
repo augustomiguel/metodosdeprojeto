@@ -1,0 +1,100 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" version="28.2.5">
+  <diagram name="Diagrama de Classes com Command e Memento" id="M-nB-cDEF12345gHiJ-kM">
+    <mxGraphModel dx="758" dy="450" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="FacadeController" value="FacadeSingletonController" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="40" y="50" width="230" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="FacadeController-stereotype" value="&lt;i&gt;&amp;lt;&amp;lt;Facade, Singleton, Invoker&amp;gt;&amp;gt;&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="FacadeController" vertex="1">
+          <mxGeometry y="30" width="230" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="FacadeController-attrs" value="- instancia: FacadeSingletonController&lt;br&gt;- historicoComandos: stack&amp;lt;ICommand&amp;gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="FacadeController" vertex="1">
+          <mxGeometry y="60" width="230" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="FacadeController-methods" value="+ getInstance()&lt;hr&gt;+ executarComando(cmd: ICommand)&lt;br&gt;+ desfazerUltimaAcao()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="FacadeController" vertex="1">
+          <mxGeometry y="90" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ICommand" value="ICommand" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="340" y="80" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ICommand-stereotype" value="&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Command&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="ICommand" vertex="1">
+          <mxGeometry y="30" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ICommand-methods" value="+ execute()&lt;br&gt;+ undo()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="ICommand" vertex="1">
+          <mxGeometry y="60" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AtualizarUsuarioCommand" value="AtualizarUsuarioCommand" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="340" y="210" width="220" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="AtualizarUsuarioCommand-stereotype" value="&lt;i&gt;&amp;lt;&amp;lt;Concrete Command, Caretaker&amp;gt;&amp;gt;&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="AtualizarUsuarioCommand" vertex="1">
+          <mxGeometry y="30" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AtualizarUsuarioCommand-attrs" value="- gerenciador: GerenciadorTabelas&lt;br&gt;- usuarioNovo: Usuario&lt;br&gt;- memento: UsuarioMemento" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="AtualizarUsuarioCommand" vertex="1">
+          <mxGeometry y="60" width="220" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AtualizarUsuarioCommand-methods" value="+ execute()&lt;br&gt;+ undo()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="AtualizarUsuarioCommand" vertex="1">
+          <mxGeometry y="100" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="GerenciadorTabelas" value="GerenciadorTabelas" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="340" y="440" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="GerenciadorTabelas-stereotype" value="&lt;b&gt;Receiver&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="GerenciadorTabelas" vertex="1">
+          <mxGeometry y="30" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="GerenciadorTabelas-methods" value="+ criar(entidade)&lt;br&gt;+ atualizar(entidade)&lt;br&gt;+ ..." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="GerenciadorTabelas" vertex="1">
+          <mxGeometry y="60" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Usuario" value="Usuario" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="640" y="270" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Usuario-stereotype" value="&lt;i&gt;&amp;lt;&amp;lt;Entity, Originator&amp;gt;&amp;gt;&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="Usuario" vertex="1">
+          <mxGeometry y="30" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Usuario-attrs" value="- nome: string&lt;br&gt;- email: string&lt;br&gt;- idade: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="Usuario" vertex="1">
+          <mxGeometry y="60" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Usuario-methods" value="+ criarMemento(): UsuarioMemento&lt;br&gt;+ restaurarMemento(m: Memento)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="Usuario" vertex="1">
+          <mxGeometry y="100" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="UsuarioMemento" value="UsuarioMemento" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="920" y="210" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="UsuarioMemento-stereotype" value="&lt;b&gt;Memento&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="UsuarioMemento" vertex="1">
+          <mxGeometry y="30" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UsuarioMemento-attrs" value="- nome: string&lt;br&gt;- email: string&lt;br&gt;- idade: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;spacingLeft=4;" parent="UsuarioMemento" vertex="1">
+          <mxGeometry y="60" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-facade-uses-icommand" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="FacadeController" target="ICommand" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-concrete-impl-icommand" style="endArrow=block;endFill=0;html=1;rounded=0;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="AtualizarUsuarioCommand" target="ICommand" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-command-uses-receiver" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="AtualizarUsuarioCommand" target="GerenciadorTabelas" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-command-uses-originator" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="AtualizarUsuarioCommand" target="Usuario" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-originator-creates-memento" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="Usuario" target="UsuarioMemento" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-caretaker-holds-memento" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="AtualizarUsuarioCommand" target="UsuarioMemento" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note-command" value="&lt;b&gt;Padrão Command&lt;/b&gt;&lt;br&gt;A &lt;i&gt;Facade&lt;/i&gt; (Invoker) executa objetos &lt;i&gt;ICommand&lt;/i&gt; em vez de chamar métodos diretamente. Cada comando encapsula uma ação e seu &lt;i&gt;Receiver&lt;/i&gt; (&lt;i&gt;GerenciadorTabelas&lt;/i&gt;)." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=14;" parent="1" vertex="1">
+          <mxGeometry x="40" y="580" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="note-memento" value="&lt;b&gt;Padrão Memento&lt;/b&gt;&lt;br&gt;O &lt;i&gt;Usuario&lt;/i&gt; (Originator) pode criar um &lt;i&gt;UsuarioMemento&lt;/i&gt; para salvar seu estado. O &lt;i&gt;AtualizarUsuarioCommand&lt;/i&gt; (Caretaker) guarda este memento antes de executar a atualização para poder usá-lo na operação de &lt;i&gt;undo()&lt;/i&gt;." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=14;" parent="1" vertex="1">
+          <mxGeometry x="640" y="580" width="350" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="note-outros" value="Observação: Outros padrões implementados anteriormente (DAO, Factory, Adapter, Template Method, etc.) foram omitidos deste diagrama para focar nos novos requisitos e manter a clareza." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;size=14;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="40" y="720" width="1080" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
