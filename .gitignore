@@ -26,8 +26,7 @@ Thumbs.db
 *.swp
 *~
 # arquivos da pasta testPython
-testPython
-models/        
+testPython        
 venv
 views
 main.py       
