@@ -17,6 +17,7 @@
 
 #include <stack>                      
 #include "../commands/ICommand.h"
+#include "../models/notificacao_observer.h" // Para o Observer
 
 // =============================================================================
 // 1. INTERFACE BÁSICA PARA ENTIDADES
@@ -463,7 +464,7 @@ public:
     }
 };
 
-// =============================================================================
+//// =============================================================================
 // 7. FACHADA SINGLETON PARA OS GERENTES (CONTROLLERS)
 // =============================================================================
 
@@ -471,11 +472,16 @@ class FacadeSingletonController {
 private:
     static std::shared_ptr<FacadeSingletonController> instancia;
     std::shared_ptr<GerenciadorTabelas> gerenciador;
+    std::stack<std::shared_ptr<ICommand>> historicoComandos;
 
-     std::stack<std::shared_ptr<ICommand>> historicoComandos;
+    // <<< ADICIONE ESTA LINHA >>>
+    std::shared_ptr<CentralDeNotificacoes> centralNotificacoes;
 
-
-    FacadeSingletonController(std::shared_ptr<GerenciadorTabelas> g) : gerenciador(g) {}
+    // Construtor privado - altere-o para incluir a inicialização
+    FacadeSingletonController(std::shared_ptr<GerenciadorTabelas> g) : gerenciador(g) {
+        // <<< ADICIONE ESTA LINHA DENTRO DO CONSTRUTOR >>>
+        centralNotificacoes = std::make_shared<CentralDeNotificacoes>();
+    }
 
 public:
     static std::shared_ptr<FacadeSingletonController> getInstance(std::shared_ptr<GerenciadorTabelas> g = nullptr) {
@@ -485,40 +491,36 @@ public:
         return instancia;
     }
 
-    /**
-     * @brief Permite que os comandos acessem o gerenciador de dados.
-     * @return Um ponteiro para o GerenciadorTabelas (o Receiver).
-     */
     std::shared_ptr<GerenciadorTabelas> getGerenciador() {
         return gerenciador;
     }
 
-     /**
-     * @brief Invoker: Executa um comando e o armazena no histórico.
-     * @param comando O objeto de comando a ser executado.
-     */
     void executarComando(std::shared_ptr<ICommand> comando) {
         comando->execute();
-        historicoComandos.push(comando); // Empilha o comando para um futuro 'undo'
+        historicoComandos.push(comando);
     }
 
-    /**
-     * @brief Desfaz a última operação executada.
-     */
     void desfazerUltimaAcao() {
         if (!historicoComandos.empty()) {
-            auto ultimoComando = historicoComandos.top(); // Pega o último comando
-            ultimoComando->undo();                         // Chama o 'undo' dele
-            historicoComandos.pop();                       // Remove do histórico
+            auto ultimoComando = historicoComandos.top();
+            ultimoComando->undo();
+            historicoComandos.pop();
         } else {
             std::cout << "Nenhuma ação para desfazer.\n";
         }
     }
 
+    // <<< ADICIONE ESTE MÉTODO COMPLETO >>>
+    /**
+     * @brief Retorna a instância da central de notificações gerida pela fachada.
+     * @return Ponteiro para a CentralDeNotificacoes.
+     */
+    std::shared_ptr<CentralDeNotificacoes> getCentralNotificacoes() {
+        return centralNotificacoes;
+    }
 
     // Método para retornar a quantidade de entidades cadastradas
     int quantidadeEntidades(const std::string& tabela) {
-        // Use a conexão diretamente para contar registros
         return static_cast<int>(gerenciador->buscarTodos<Usuario>(tabela).size());
     }
 };
